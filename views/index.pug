@@ -1,0 +1,26 @@
+doctype html
+html(lang='en')
+    head
+        meta(charset='UTF-8')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        script(src='ht4.js' defer) 
+        link(rel='stylesheet', href='style.css')
+        title Document
+    body
+        header
+            h1 my pug express htmx page
+
+        main   
+            div(class='create')
+                form(action='/cars', method='POST' t4-post='/cars' t4-trigger='submit' t4-target='.cars_container' t4-swap='afterbegin' t4-form-reset)
+
+                    input(type="text", name="brand", placeholder='Brand')
+                    input(type="text", name="model", placeholder='Model' t4-input-optional)
+                    input(type="submit", value="Save")
+
+
+            div(class='cars_container' t4-get='/cars' t4-trigger='load', t4-swap='innerHTML')
+                
+
+        footer
+            h3 end of pagee

@@ -1,0 +1,38 @@
+* {
+    box-sizing: border-box;
+    margin:0;
+    padding:0;
+    color:#DDDDDD
+}
+
+header, main, footer{
+    min-height: 30vh;
+    border-bottom: 1px black solid;
+    background-color: #292929;
+}
+
+.cars_container {
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:10px;
+    padding:3%;
+}
+
+.cars_container > div {
+    background-color:#494949;
+    padding:3%;
+}
+
+.create {
+    padding:5%;
+}
+
+.create input {
+    width:100%;
+    padding:1%;
+    font-size:1.3rem;
+}
+
+button, form input{
+    color: #292929; 
+}

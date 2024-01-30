@@ -1,0 +1,7 @@
+if cars
+    each car in cars 
+        div(id=car.id)
+            h3=car.brand 
+            p 
+                i=car.model
+            button(t4-delete='/cars/' + car.id, t4-trigger = 'click', t4-target = '#'+car.id) delete
