@@ -1,31 +1,20 @@
-window.onload=(() => {
-    const gets = document.querySelectorAll('[t4-get]');
-    const posts = document.querySelectorAll('[t4-post]');
-    const dels = document.querySelectorAll('[t4-delete]');
-    apply({gets, posts, dels});
-});
+window.onload=(apply(document));
 
 const parser = new DOMParser();
 
 /**
- * 
- * @param {String} url 
+ * Gets elements from url, places them in target element
+ * @param {string} url 
  * @param {Element} target 
- * @param {String} swap 
  */
-async function load(url, swap, target) {
+async function load(url, target) {
     const response = await fetch(url);
     const result = await response.text();
     const doc = parser.parseFromString(result, 'text/html');
-    const elements = doc.querySelectorAll('div');
-    const posts = doc.querySelectorAll('[t4-post]');
-    const dels = doc.querySelectorAll('[t4-delete]');
-
-    for (const el of elements) {
+    for (const el of doc.querySelectorAll('div')) {
         target.appendChild(el);
+        apply(el);
     };
-
-    apply({posts, dels});
 }
 
 /**
@@ -45,29 +34,18 @@ async function send(url, form, target, swap) {
         data[input['name']] = input['value'];
     }
 
-    const response = await fetch(url, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(data)
-        }
-    );
+    const response = await fetch(url, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data)});
 
     const result = await response.text();
     const doc = parser.parseFromString(result, 'text/html');
-
     const element = doc.body.children[0];
     const container = document.querySelector(target);
 
     if (swap == 'afterbegin') container.insertBefore(element, container.firstChild);
     else container.appendChild(element);
-
     if (form.hasAttribute('t4-form-reset')) form.reset();
 
-    const gets = [element.querySelector('[t4-get]')];
-    const posts = [element.querySelector('[t4-post]')]
-    const dels = [element.querySelector('[t4-delete]')];
-
-    apply({gets, posts, dels});
+    apply(element);
 }
 
 async function destroy(url, target) {
@@ -79,12 +57,13 @@ async function destroy(url, target) {
 /**
  * This function applies operations based on the provided object.
  *
- * @param {Object} obj - The object containing the operations.
- * @param {Array} obj.gets - The array for 'get' operations.
- * @param {Array} obj.posts - The array for 'post' operations.
- * @param {Array} obj.dels - The array for 'delete' operations.
+ * @param {Element} element - The object to apply from
  */
-function apply({gets = [], posts = [], dels = []}) {
+function apply(element) {
+
+    const gets = element.querySelectorAll('[t4-get]');
+    const posts = element.querySelectorAll('[t4-post]')
+    const dels = element.querySelectorAll('[t4-delete]');
 
     if (!gets != gets) {
         for (const el of gets) {get(el)};
@@ -103,7 +82,6 @@ function get(el) {
     if(el.getAttribute('t4-trigger') == 'load') {
         load(
             el.getAttribute('t4-get'), 
-            el.getAttribute('t4-swap'),
             el
         );
     };
