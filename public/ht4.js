@@ -5,13 +5,14 @@ const parser = new DOMParser();
 /**
  * Gets elements from url, places them in target element
  * @param {string} url 
- * @param {Element} target 
+ * @param {HTMLElement} target 
  */
 async function load(url, target) {
     const response = await fetch(url);
     const result = await response.text();
+    console.log(result);
     const doc = parser.parseFromString(result, 'text/html');
-    for (const el of doc.querySelectorAll('div')) {
+    for (const el of doc.body.childNodes) {
         target.appendChild(el);
         apply(el);
     };
@@ -20,12 +21,16 @@ async function load(url, target) {
 /**
  * 
  * @param {string} url fetching url
- * @param {Element} form form element
+ * @param {HTMLFormElement} form form element
  * @param {string} target target container selector
  * @param {string} swap how should it swap
  */
 async function send(url, form, target, swap) {
     window.event.preventDefault();
+
+    /**
+     * @type {{}}
+     */
     const data = {};
 
     for (const input of form.querySelectorAll('input')) {
@@ -41,8 +46,8 @@ async function send(url, form, target, swap) {
     const element = doc.body.children[0];
     const container = document.querySelector(target);
 
-    if (swap == 'afterbegin') container.insertBefore(element, container.firstChild);
-    else container.appendChild(element);
+    if (swap == 'afterbegin') container.prepend(element);
+    else container.append(element);
     if (form.hasAttribute('t4-form-reset')) form.reset();
 
     apply(element);
@@ -57,7 +62,7 @@ async function destroy(url, target) {
 /**
  * This function applies operations based on the provided object.
  *
- * @param {Element} element - The object to apply from
+ * @param {HTMLElement} element - The object to apply from
  */
 function apply(element) {
 
@@ -65,16 +70,16 @@ function apply(element) {
     const posts = element.querySelectorAll('[t4-post]')
     const dels = element.querySelectorAll('[t4-delete]');
 
-    if (!gets != gets) {
-        for (const el of gets) {get(el)};
+    if (gets['length']) {
+        for (const el of gets) get(el);
     }
 
-    if (!posts != posts) {
-        for (const el of posts) {post(el)};
+    if (posts['length']) {
+        for (const el of posts) post(el);
     }
 
-    if (!dels != dels) {
-        for (const el of dels) {del(el)};
+    if (dels['length']) {
+        for (const el of dels) del(el);
     }
 }
 
